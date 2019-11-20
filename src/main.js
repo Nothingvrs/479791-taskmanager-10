@@ -1,6 +1,6 @@
 'use strict';
 
-const TASK_COUNT = 3;
+const TASK_AMOUNT = 3;
 
 const createSiteMenuTemplate = () => {
   return (`<section class="control__btn-wrap">
@@ -457,13 +457,13 @@ render(siteMainElement, createFilterTemplate());
 render(siteMainElement, createBoardTemplate());
 
 const taskListElement = siteMainElement.querySelector(`.board__tasks`);
-const taskBoard = siteMainElement.querySelector(`.board`);
+const taskBoardElement = siteMainElement.querySelector(`.board`);
 render(taskListElement, createTaskEditTemplate());
 
-new Array(TASK_COUNT)
+new Array(TASK_AMOUNT)
   .fill(``)
   .forEach(
       () => render(taskListElement, createTaskTemplate())
   );
 
-render(taskBoard, createButtonLoadMoreTemplate());
+render(taskBoardElement, createButtonLoadMoreTemplate());
