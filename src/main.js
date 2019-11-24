@@ -8,6 +8,7 @@ import {createBoardTemplate} from './components/board.js';
 
 const TASK_AMOUNT = 3;
 
+
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
@@ -22,6 +23,7 @@ render(siteMainElement, createBoardTemplate());
 const taskListElement = siteMainElement.querySelector(`.board__tasks`);
 const taskBoardElement = siteMainElement.querySelector(`.board`);
 render(taskBoardElement, createSortingTemplate(), `afterbegin`);
+
 render(taskListElement, createTaskEditTemplate());
 
 new Array(TASK_AMOUNT)
@@ -31,3 +33,5 @@ new Array(TASK_AMOUNT)
   );
 
 render(taskBoardElement, createLoadMoreButtonTemplate());
+
+
