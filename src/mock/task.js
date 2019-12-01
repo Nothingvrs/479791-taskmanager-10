@@ -1,5 +1,6 @@
 import {Colors} from '../const.js';
 
+const DAYS = 7;
 const DescriptionItems = [
   `Изучить теорию`,
   `Сделать домашку`,
@@ -24,6 +25,8 @@ const Tags = [
   `keks`
 ];
 
+const isTrue = () => Math.random() > 0.5;
+
 const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length);
 
@@ -36,8 +39,8 @@ const getRandomIntegerNumber = (min, max) => {
 
 const getRandomDate = () => {
   const targetDate = new Date();
-  const sign = Math.random() > 0.5 ? 1 : -1;
-  const diffValue = sign * getRandomIntegerNumber(0, 7);
+  const sign = isTrue() ? 1 : -1;
+  const diffValue = sign * getRandomIntegerNumber(0, DAYS);
 
   targetDate.setDate(targetDate.getDate() + diffValue);
 
@@ -46,18 +49,18 @@ const getRandomDate = () => {
 
 const generateRepeatingDays = () => {
   return Object.assign({}, DefaultRepeatingDays, {
-    'mo': Math.random() > 0.5,
+    'mo': isTrue(),
   });
 };
 
 const generateTags = (tags) => {
   return tags
-    .filter(() => Math.random() > 0.5)
+    .filter(() => isTrue())
     .slice(0, 3);
 };
 
 const generateTask = () => {
-  const dueDate = Math.random() > 0.5 ? null : getRandomDate();
+  const dueDate = isTrue() ? null : getRandomDate();
 
   return {
     description: getRandomArrayItem(DescriptionItems),
@@ -65,8 +68,8 @@ const generateTask = () => {
     repeatingDays: dueDate ? DefaultRepeatingDays : generateRepeatingDays(),
     tags: new Set(generateTags(Tags)),
     color: getRandomArrayItem(Colors),
-    isFavorite: Math.random() > 0.5,
-    isArchive: Math.random() > 0.5,
+    isFavorite: isTrue(),
+    isArchive: isTrue(),
   };
 };
 
