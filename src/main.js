@@ -1,37 +1,32 @@
-import {createSiteMenuTemplate} from './components/menu.js';
-import {createSortingTemplate} from './components/sorting';
-import {createFilterTemplate} from './components/filter.js';
-import {createTaskTemplate} from './components/task.js';
-import {createTaskEditTemplate} from './components/task-edit.js';
-import {createLoadMoreButtonTemplate} from './components/load-more-button.js';
 import {createBoardTemplate} from './components/board.js';
+import {createFilterTemplate} from './components/filter.js';
+import {createLoadMoreButtonTemplate} from './components/load-more-button.js';
+import {createTaskEditTemplate} from './components/task-edit.js';
+import {createTaskTemplate} from './components/task.js';
+import {createSiteMenuTemplate} from './components/menu.js';
+import {generateTasks} from './mock/task.js';
+import {generateFilters} from './mock/filter.js';
 
-const TASK_AMOUNT = 3;
+const TASK_COUNT = 22;
 
-
-const render = (container, template, place = `beforeend`) => {
+const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
 const siteMainElement = document.querySelector(`.main`);
-const siteHeaderElement = document.querySelector(`.main__control`);
+const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
-render(siteHeaderElement, createSiteMenuTemplate());
-render(siteMainElement, createFilterTemplate());
-render(siteMainElement, createBoardTemplate());
+render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
+
+const filters = generateFilters();
+render(siteMainElement, createFilterTemplate(filters), `beforeend`);
+render(siteMainElement, createBoardTemplate(), `beforeend`);
 
 const taskListElement = siteMainElement.querySelector(`.board__tasks`);
-const taskBoardElement = siteMainElement.querySelector(`.board`);
-render(taskBoardElement, createSortingTemplate(), `afterbegin`);
+const tasks = generateTasks(TASK_COUNT);
 
-render(taskListElement, createTaskEditTemplate());
+render(taskListElement, createTaskEditTemplate(tasks[0]), `beforeend`);
+tasks.slice(1).forEach((task) => render(taskListElement, createTaskTemplate(task), `beforeend`));
 
-new Array(TASK_AMOUNT)
-  .fill(``)
-  .forEach(
-      () => render(taskListElement, createTaskTemplate())
-  );
-
-render(taskBoardElement, createLoadMoreButtonTemplate());
-
-
+const boardElement = siteMainElement.querySelector(`.board`);
+render(boardElement, createLoadMoreButtonTemplate(), `beforeend`);
