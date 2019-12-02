@@ -25,7 +25,7 @@ const Tags = [
   `keks`
 ];
 
-const isTrue = () => Math.random() > 0.5;
+const getRandomBoolean = () => Math.random() > 0.5;
 
 const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length);
@@ -39,7 +39,7 @@ const getRandomIntegerNumber = (min, max) => {
 
 const getRandomDate = () => {
   const targetDate = new Date();
-  const sign = isTrue() ? 1 : -1;
+  const sign = getRandomBoolean() ? 1 : -1;
   const diffValue = sign * getRandomIntegerNumber(0, DAYS);
 
   targetDate.setDate(targetDate.getDate() + diffValue);
@@ -49,18 +49,18 @@ const getRandomDate = () => {
 
 const generateRepeatingDays = () => {
   return Object.assign({}, DefaultRepeatingDays, {
-    'mo': isTrue(),
+    'mo': getRandomBoolean(),
   });
 };
 
 const generateTags = (tags) => {
   return tags
-    .filter(() => isTrue())
+    .filter(() => getRandomBoolean())
     .slice(0, 3);
 };
 
 const generateTask = () => {
-  const dueDate = isTrue() ? null : getRandomDate();
+  const dueDate = getRandomBoolean() ? null : getRandomDate();
 
   return {
     description: getRandomArrayItem(DescriptionItems),
@@ -68,8 +68,8 @@ const generateTask = () => {
     repeatingDays: dueDate ? DefaultRepeatingDays : generateRepeatingDays(),
     tags: new Set(generateTags(Tags)),
     color: getRandomArrayItem(Colors),
-    isFavorite: isTrue(),
-    isArchive: isTrue(),
+    isFavorite: getRandomBoolean(),
+    isArchive: getRandomBoolean(),
   };
 };
 
