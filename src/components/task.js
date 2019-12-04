@@ -1,5 +1,41 @@
 import {MONTH_NAMES} from '../const.js';
 import {createElement, formatTime} from '../utils.js';
+import TaskEditComponent from "./task-edit";
+import {render, RenderPosition} from "../utils";
+
+export const renderTask = (taskListElement, task) => {
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToTask();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const replaceEditToTask = () => {
+    taskListElement.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
+  };
+
+  const replaceTaskToEdit = () => {
+    taskListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+  };
+
+  const taskComponent = new Task(task);
+  const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
+
+  editButton.addEventListener(`click`, () => {
+    replaceTaskToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
+
+  const taskEditComponent = new TaskEditComponent(task);
+  const editForm = taskEditComponent.getElement().querySelector(`form`);
+
+  editForm.addEventListener(`submit`, replaceEditToTask);
+
+  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+};
 
 const createHashtagsMarkup = (hashtags) => {
   return hashtags
