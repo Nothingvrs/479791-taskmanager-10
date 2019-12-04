@@ -1,5 +1,5 @@
-import {Colors, Days, MonthNames} from '../const.js';
-import {formatTime} from '../utils.js';
+import {COLORS, DAYS, MONTH_NAMES} from '../const.js';
+import {createElement, formatTime} from '../utils.js';
 
 const createColorsMarkup = (colors, currentColor) => {
   return colors
@@ -70,13 +70,13 @@ const createHashtags = (tags) => {
     .join(`\n`);
 };
 
-export const createTaskEditTemplate = (task) => {
+const createTaskEditTemplate = (task) => {
   const {description, tags, dueDate, color, repeatingDays} = task;
 
   const isExpired = dueDate instanceof Date && dueDate < Date.now();
   const isDateShowing = !!dueDate;
 
-  const date = isDateShowing ? `${dueDate.getDate()} ${MonthNames[dueDate.getMonth()]}` : ``;
+  const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
   const time = isDateShowing ? formatTime(dueDate) : ``;
 
   const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
@@ -84,8 +84,8 @@ export const createTaskEditTemplate = (task) => {
   const deadlineClass = isExpired ? `card--deadline` : ``;
 
   const tagsMarkup = createHashtags(tags);
-  const colorsMarkup = createColorsMarkup(Colors, color);
-  const repeatingDaysMarkup = createRepeatingDaysMarkup(Days, repeatingDays);
+  const colorsMarkup = createColorsMarkup(COLORS, color);
+  const repeatingDaysMarkup = createRepeatingDaysMarkup(DAYS, repeatingDays);
 
   return (
     `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
@@ -115,7 +115,6 @@ export const createTaskEditTemplate = (task) => {
                   </button>
   
                   ${
-
     isDateShowing ?
       `<fieldset class="card__date-deadline">
                         <label class="card__input-deadline-wrap">
@@ -179,3 +178,26 @@ export const createTaskEditTemplate = (task) => {
       </article>`
   );
 };
+
+export default class TaskEdit {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskEditTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
