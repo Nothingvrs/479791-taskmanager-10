@@ -3,7 +3,7 @@ import FilterComponent from './components/filter.js';
 import LoadMoreButtonComponent from './components/load-more-button.js';
 import TaskEditComponent from './components/task-edit.js';
 import TaskComponent from './components/task.js';
-import SiteMenuComponent from './components/menu.js';
+import SiteMenu from './components/menu.js';
 import {generateTasks} from './mock/task.js';
 import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils.js';
@@ -32,7 +32,7 @@ const renderTask = (task) => {
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
-render(siteHeaderElement, new SiteMenuComponent(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new SiteMenu().getElement(), RenderPosition.BEFOREEND);
 
 const filters = generateFilters();
 render(siteMainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
