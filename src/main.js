@@ -2,13 +2,14 @@ import BoardComponent from './components/board.js';
 import FilterComponent from './components/filter.js';
 import LoadMoreButtonComponent from './components/load-more-button.js';
 import Tasks from './components/tasks.js';
+import Task from "./components/task";
 import NoTasksComponent from './components/no-tasks.js';
 import SiteMenuComponent from './components/menu.js';
 import Sort from './components/sort.js';
 import {generateTasks} from './mock/task.js';
 import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils.js';
-import {renderTask} from "./components/task";
+import TaskEdit from "./components/task-edit";
 
 const TASK_COUNT = 22;
 const SHOWING_TASKS_COUNT_ON_START = 8;
@@ -27,6 +28,18 @@ render(siteMainElement, boardComponent.getElement(), RenderPosition.BEFOREEND);
 
 const tasks = generateTasks(TASK_COUNT);
 const isAllTasksArchived = tasks.every((task) => task.isArchive);
+
+const renderTask = (taskListElement, task) => {
+  const taskComponent = new Task(task);
+  const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
+  const taskEditComponent = new TaskEdit(task);
+  //const editForm = taskEditComponent.getElement().querySelector(`.card__form`);
+
+  taskComponent.getTaskEdit(editButton, taskComponent, taskEditComponent, taskListElement);
+  //taskComponent.taskEditAccess(editForm, taskListElement, taskComponent, taskEditComponent);
+
+  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+};
 
 if (isAllTasksArchived) {
   render(boardComponent.getElement(), new NoTasksComponent().getElement(), RenderPosition.BEFOREEND);

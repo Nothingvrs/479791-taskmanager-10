@@ -1,41 +1,5 @@
 import {MONTH_NAMES} from '../const.js';
 import {createElement, formatTime} from '../utils.js';
-import TaskEditComponent from "./task-edit";
-import {render, RenderPosition} from "../utils";
-
-export const renderTask = (taskListElement, task) => {
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToTask();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const replaceEditToTask = () => {
-    taskListElement.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
-  };
-
-  const replaceTaskToEdit = () => {
-    taskListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
-  };
-
-  const taskComponent = new Task(task);
-  const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
-
-  editButton.addEventListener(`click`, () => {
-    replaceTaskToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  const taskEditComponent = new TaskEditComponent(task);
-  const editForm = taskEditComponent.getElement().querySelector(`form`);
-
-  editForm.addEventListener(`submit`, replaceEditToTask);
-
-  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
-};
 
 const createHashtagsMarkup = (hashtags) => {
   return hashtags
@@ -51,21 +15,28 @@ const createHashtagsMarkup = (hashtags) => {
     .join(`\n`);
 };
 
-const createTaskTemplate = (task) => {
-  const {description, tags, dueDate, color, repeatingDays} = task;
+export default class Task {
+  constructor(task) {
+    this._task = task;
 
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
-  const isDateShowing = !!dueDate;
+    this._element = null;
+  }
 
-  const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
-  const time = isDateShowing ? formatTime(dueDate) : ``;
+  getTemplate() {
+    const {description, tags, dueDate, color, repeatingDays} = this._task;
 
-  const hashtags = createHashtagsMarkup(Array.from(tags));
-  const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
-  const deadlineClass = isExpired ? `card--deadline` : ``;
+    const isExpired = dueDate instanceof Date && dueDate < Date.now();
+    const isDateShowing = !!dueDate;
 
-  return (
-    `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
+    const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
+    const time = isDateShowing ? formatTime(dueDate) : ``;
+
+    const hashtags = createHashtagsMarkup(Array.from(tags));
+    const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
+    const deadlineClass = isExpired ? `card--deadline` : ``;
+
+    return (
+      `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
@@ -110,18 +81,7 @@ const createTaskTemplate = (task) => {
         </div>
       </div>
     </article>`
-  );
-};
-
-export default class Task {
-  constructor(task) {
-    this._task = task;
-
-    this._element = null;
-  }
-
-  getTemplate() {
-    return createTaskTemplate(this._task);
+    );
   }
 
   getElement() {
@@ -134,5 +94,33 @@ export default class Task {
 
   removeElement() {
     this._element = null;
+  }
+
+  onEscKeyDown(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      this.replaceEditToTask();
+      document.removeEventListener(`keydown`, this.onEscKeyDown);
+    }
+  }
+
+  replaceEditToTask(list, task, taskEdit) {
+    list.replaceChild(task.getElement(), taskEdit.getElement());
+  }
+
+  replaceTaskToEdit(list, task, taskEdit) {
+    list.replaceChild(taskEdit.getElement(), task.getElement());
+  }
+
+  getTaskEdit(button, task, taskEdit, list) {
+    button.addEventListener(`click`, () => {
+      this.replaceTaskToEdit(list, task, taskEdit);
+      document.addEventListener(`keydown`, this.onEscKeyDown);
+    });
+  }
+
+  taskEditAccess(form, list, task, taskEdit) {
+    form.addEventListener(`submit`, this.replaceEditToTask(list, task, taskEdit));
   }
 }
