@@ -1,6 +1,7 @@
 import {MONTH_NAMES} from '../const.js';
 import {createElement, formatTime} from '../utils.js';
 
+
 const createHashtagsMarkup = (hashtags) => {
   return hashtags
     .map((hashtag) => {
@@ -97,15 +98,6 @@ export default class Task {
     this._element = null;
   }
 
-  onEscKeyDown(evt) {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      this.replaceEditToTask();
-      document.removeEventListener(`keydown`, this.onEscKeyDown);
-    }
-  }
-
   replaceEditToTask(task, taskEdit) {
     this.list.replaceChild(task.getElement(), taskEdit.getElement());
   }
@@ -114,10 +106,10 @@ export default class Task {
     this.list.replaceChild(taskEdit.getElement(), task.getElement());
   }
 
-  getTaskEdit(button, task, taskEdit) {
+  getTaskEdit(button, task, taskEdit, handler) {
     button.addEventListener(`click`, () => {
       this.replaceTaskToEdit(task, taskEdit);
-      document.addEventListener(`keydown`, this.onEscKeyDown);
+      document.addEventListener(`keydown`, handler);
     });
   }
 

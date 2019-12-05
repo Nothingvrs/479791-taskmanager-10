@@ -35,7 +35,16 @@ const renderTask = (taskListElement, task) => {
   const taskComponent = new Task(task, taskListElement, editForm);
   const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
 
-  taskComponent.getTaskEdit(editButton, taskComponent, taskEditComponent);
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      taskComponent.replaceEditToTask(taskComponent, taskEditComponent);
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  taskComponent.getTaskEdit(editButton, taskComponent, taskEditComponent, onEscKeyDown);
   taskComponent.taskEditAccess(taskComponent, taskEditComponent);
 
   render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
