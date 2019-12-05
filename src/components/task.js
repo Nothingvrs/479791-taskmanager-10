@@ -121,6 +121,8 @@ export default class Task {
   }
 
   taskEditAccess(form, list, task, taskEdit) {
-    form.addEventListener(`submit`, this.replaceEditToTask(list, task, taskEdit));
+    form.addEventListener(`submit`, () => {
+      this.replaceEditToTask(list, task, taskEdit);
+    });
   }
 }
