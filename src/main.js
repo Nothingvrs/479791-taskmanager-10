@@ -33,10 +33,10 @@ const renderTask = (taskListElement, task) => {
   const taskComponent = new Task(task);
   const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
   const taskEditComponent = new TaskEdit(task);
-  //const editForm = taskEditComponent.getElement().querySelector(`.card__form`);
+  const editForm = taskEditComponent.getElement().querySelector(`form`);
 
   taskComponent.getTaskEdit(editButton, taskComponent, taskEditComponent, taskListElement);
-  //taskComponent.taskEditAccess(editForm, taskListElement, taskComponent, taskEditComponent);
+  taskComponent.taskEditAccess(editForm, taskListElement, taskComponent, taskEditComponent);
 
   render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
 };
