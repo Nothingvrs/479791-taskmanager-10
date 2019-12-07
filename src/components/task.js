@@ -116,8 +116,8 @@ export default class Task {
   taskEditAccess(task, taskEdit, handler) {
     this._form.addEventListener(`submit`, () => {
       this.replaceEditToTask(task, taskEdit);
+      document.removeEventListener(`keydown`, handler);
     });
-    document.removeEventListener(`keydown`, handler);
   }
 }
 
