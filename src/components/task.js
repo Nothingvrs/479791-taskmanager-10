@@ -19,7 +19,7 @@ const createHashtagsMarkup = (hashtags) => {
 export default class Task {
   constructor(task, list, form) {
     this._task = task;
-    this.list = list;
+    this._list = list;
     this._form = form;
     this._element = null;
   }
@@ -99,11 +99,11 @@ export default class Task {
   }
 
   replaceEditToTask(task, taskEdit) {
-    this.list.replaceChild(task.getElement(), taskEdit.getElement());
+    this._list.replaceChild(task.getElement(), taskEdit.getElement());
   }
 
   replaceTaskToEdit(task, taskEdit) {
-    this.list.replaceChild(taskEdit.getElement(), task.getElement());
+    this._list.replaceChild(taskEdit.getElement(), task.getElement());
   }
 
   getTaskEdit(button, task, taskEdit, handler) {
@@ -113,9 +113,11 @@ export default class Task {
     });
   }
 
-  taskEditAccess(task, taskEdit) {
+  taskEditAccess(task, taskEdit, handler) {
     this._form.addEventListener(`submit`, () => {
       this.replaceEditToTask(task, taskEdit);
+      document.removeEventListener(`keydown`, handler);
     });
   }
 }
+

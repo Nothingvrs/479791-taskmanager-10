@@ -45,7 +45,7 @@ const renderTask = (taskListElement, task) => {
   };
 
   taskComponent.getTaskEdit(editButton, taskComponent, taskEditComponent, onEscKeyDown);
-  taskComponent.taskEditAccess(taskComponent, taskEditComponent);
+  taskComponent.taskEditAccess(taskComponent, taskEditComponent, onEscKeyDown);
 
   render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
 };
