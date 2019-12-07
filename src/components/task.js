@@ -1,5 +1,5 @@
-import {MonthNames} from '../const.js';
-import {formatTime} from '../utils.js';
+import {MONTH_NAMES} from '../const.js';
+import {createElement, formatTime} from '../utils.js';
 
 
 const createHashtagsMarkup = (hashtags) => {
@@ -16,23 +16,29 @@ const createHashtagsMarkup = (hashtags) => {
     .join(`\n`);
 };
 
+export default class Task {
+  constructor(task, list, form) {
+    this._task = task;
+    this.list = list;
+    this._form = form;
+    this._element = null;
+  }
 
-export const createTaskTemplate = (task) => {
+  getTemplate() {
+    const {description, tags, dueDate, color, repeatingDays} = this._task;
 
-  const {description, tags, dueDate, color, repeatingDays} = task;
+    const isExpired = dueDate instanceof Date && dueDate < Date.now();
+    const isDateShowing = !!dueDate;
 
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
-  const isDateShowing = !!dueDate;
+    const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
+    const time = isDateShowing ? formatTime(dueDate) : ``;
 
-  const date = isDateShowing ? `${dueDate.getDate()} ${MonthNames[dueDate.getMonth()]}` : ``;
-  const time = isDateShowing ? formatTime(dueDate) : ``;
+    const hashtags = createHashtagsMarkup(Array.from(tags));
+    const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
+    const deadlineClass = isExpired ? `card--deadline` : ``;
 
-  const hashtags = createHashtagsMarkup(Array.from(tags));
-  const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
-  const deadlineClass = isExpired ? `card--deadline` : ``;
-
-  return (
-    `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
+    return (
+      `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
@@ -77,5 +83,39 @@ export const createTaskTemplate = (task) => {
         </div>
       </div>
     </article>`
-  );
-};
+    );
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+  replaceEditToTask(task, taskEdit) {
+    this.list.replaceChild(task.getElement(), taskEdit.getElement());
+  }
+
+  replaceTaskToEdit(task, taskEdit) {
+    this.list.replaceChild(taskEdit.getElement(), task.getElement());
+  }
+
+  getTaskEdit(button, task, taskEdit, handler) {
+    button.addEventListener(`click`, () => {
+      this.replaceTaskToEdit(task, taskEdit);
+      document.addEventListener(`keydown`, handler);
+    });
+  }
+
+  taskEditAccess(task, taskEdit) {
+    this._form.addEventListener(`submit`, () => {
+      this.replaceEditToTask(task, taskEdit);
+    });
+  }
+}
