@@ -1,98 +1,26 @@
-import BoardComponent from './components/board.js';
-import FilterComponent from './components/filter.js';
-import LoadMoreButtonComponent from './components/load-more-button.js';
-import Tasks from './components/tasks.js';
-import Task from "./components/task";
-import NoTasksComponent from './components/no-tasks.js';
-import SiteMenuComponent from './components/menu.js';
-import Sort from './components/sort.js';
+import BoardController from './controllers/board.js';
+import Board from './components/board.js';
+import Filter from './components/filter.js';
+import SiteMenu from './components/menu.js';
 import {generateTasks} from './mock/task.js';
 import {generateFilters} from './mock/filter.js';
-import {render, remove, replace, RenderPosition} from './components/utils/render.js';
-import TaskEdit from "./components/task-edit";
+import {render, RenderPosition} from './components/utils/render.js';
 
 const TASK_COUNT = 22;
-const SHOWING_TASKS_COUNT_ON_START = 8;
-const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
-
-const renderTask = (taskListElement, task) => {
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToTask();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const replaceEditToTask = () => {
-    replace(taskComponent, taskEditComponent);
-  };
-
-  const replaceTaskToEdit = () => {
-    replace(taskEditComponent, taskComponent);
-  };
-
-  const taskComponent = new Task(task);
-
-  taskComponent.setEditButtonClickHandler(() => {
-    replaceTaskToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  const taskEditComponent = new TaskEdit(task);
-
-  taskEditComponent.setSubmitHandler(replaceEditToTask);
-
-  render(taskListElement, taskComponent, RenderPosition.BEFOREEND);
-};
-
-const renderBoard = (boardComponent, tasks) => {
-  const isAllTasksArchived = tasks.every((task) => task.isArchive);
-
-  if (isAllTasksArchived) {
-    render(boardComponent.getElement(), new NoTasksComponent(), RenderPosition.BEFOREEND);
-    return;
-  }
-
-  render(boardComponent.getElement(), new Sort(), RenderPosition.BEFOREEND);
-  render(boardComponent.getElement(), new Tasks(), RenderPosition.BEFOREEND);
-
-  const taskListElement = boardComponent.getElement().querySelector(`.board__tasks`);
-
-  let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
-  tasks.slice(0, showingTasksCount)
-    .forEach((task) => {
-      renderTask(taskListElement, task);
-    });
-
-  const loadMoreButtonComponent = new LoadMoreButtonComponent();
-  render(boardComponent.getElement(), loadMoreButtonComponent, RenderPosition.BEFOREEND);
-
-  loadMoreButtonComponent.setClickHandler(() => {
-    const prevTasksCount = showingTasksCount;
-    showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
-
-    tasks.slice(prevTasksCount, showingTasksCount)
-      .forEach((task) => renderTask(taskListElement, task));
-
-    if (showingTasksCount >= tasks.length) {
-      remove(loadMoreButtonComponent);
-    }
-  });
-};
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
-render(siteHeaderElement, new SiteMenuComponent(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new SiteMenu(), RenderPosition.BEFOREEND);
 
 const filters = generateFilters();
-render(siteMainElement, new FilterComponent(filters), RenderPosition.BEFOREEND);
+render(siteMainElement, new Filter(filters), RenderPosition.BEFOREEND);
 
-const boardComponent = new BoardComponent();
+const boardComponent = new Board();
 render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
 
 const tasks = generateTasks(TASK_COUNT);
 
-renderBoard(boardComponent, tasks);
+const boardController = new BoardController(boardComponent);
+
+boardController.render(tasks);
