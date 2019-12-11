@@ -1,5 +1,6 @@
 import {MONTH_NAMES} from '../const.js';
-import {createElement, formatTime} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
+import {formatTime} from '../utils';
 
 
 const createHashtagsMarkup = (hashtags) => {
@@ -16,12 +17,12 @@ const createHashtagsMarkup = (hashtags) => {
     .join(`\n`);
 };
 
-export default class Task {
+export default class Task extends AbstractComponent {
   constructor(task, list, form) {
+    super();
     this._task = task;
     this._list = list;
     this._form = form;
-    this._element = null;
   }
 
   getTemplate() {
@@ -84,18 +85,6 @@ export default class Task {
       </div>
     </article>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   replaceEditToTask(task, taskEdit) {
