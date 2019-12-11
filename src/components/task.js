@@ -1,6 +1,6 @@
 import {MONTH_NAMES} from '../const.js';
 import AbstractComponent from './abstract-component.js';
-import {formatTime} from '../utils';
+import {formatTime} from './utils/common.js';
 
 
 const createHashtagsMarkup = (hashtags) => {
@@ -85,28 +85,6 @@ export default class Task extends AbstractComponent {
       </div>
     </article>`
     );
-  }
-
-  replaceEditToTask(task, taskEdit) {
-    this._list.replaceChild(task.getElement(), taskEdit.getElement());
-  }
-
-  replaceTaskToEdit(task, taskEdit) {
-    this._list.replaceChild(taskEdit.getElement(), task.getElement());
-  }
-
-  getTaskEdit(button, task, taskEdit, handler) {
-    button.addEventListener(`click`, () => {
-      this.replaceTaskToEdit(task, taskEdit);
-      document.addEventListener(`keydown`, handler);
-    });
-  }
-
-  taskEditAccess(task, taskEdit, handler) {
-    this._form.addEventListener(`submit`, () => {
-      this.replaceEditToTask(task, taskEdit);
-      document.removeEventListener(`keydown`, handler);
-    });
   }
 }
 
