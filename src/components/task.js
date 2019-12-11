@@ -86,5 +86,10 @@ export default class Task extends AbstractComponent {
     </article>`
     );
   }
+
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, handler);
+  }
 }
 
