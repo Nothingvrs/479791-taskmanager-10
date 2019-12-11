@@ -1,5 +1,6 @@
 import {MONTH_NAMES} from '../const.js';
-import {createElement, formatTime} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
+import {formatTime} from './utils/common.js';
 
 
 const createHashtagsMarkup = (hashtags) => {
@@ -16,12 +17,12 @@ const createHashtagsMarkup = (hashtags) => {
     .join(`\n`);
 };
 
-export default class Task {
+export default class Task extends AbstractComponent {
   constructor(task, list, form) {
+    super();
     this._task = task;
     this._list = list;
     this._form = form;
-    this._element = null;
   }
 
   getTemplate() {
@@ -86,38 +87,9 @@ export default class Task {
     );
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  replaceEditToTask(task, taskEdit) {
-    this._list.replaceChild(task.getElement(), taskEdit.getElement());
-  }
-
-  replaceTaskToEdit(task, taskEdit) {
-    this._list.replaceChild(taskEdit.getElement(), task.getElement());
-  }
-
-  getTaskEdit(button, task, taskEdit, handler) {
-    button.addEventListener(`click`, () => {
-      this.replaceTaskToEdit(task, taskEdit);
-      document.addEventListener(`keydown`, handler);
-    });
-  }
-
-  taskEditAccess(task, taskEdit, handler) {
-    this._form.addEventListener(`submit`, () => {
-      this.replaceEditToTask(task, taskEdit);
-      document.removeEventListener(`keydown`, handler);
-    });
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, handler);
   }
 }
 
