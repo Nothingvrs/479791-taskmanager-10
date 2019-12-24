@@ -7,5 +7,3 @@ export const formatTime = (date) => {
 export const formatDate = (date) => {
   return moment(date).format(`DD MMMM`);
 };
-
-export const take = (array, count, startPos = 0) => array.slice(startPos, startPos + count);
