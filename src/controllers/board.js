@@ -38,7 +38,6 @@ export default class BoardController {
 
   render(tasks) {
     this._tasks = tasks;
-
     const container = this._container.getElement();
     const isAllTasksArchived = this._tasks.every((task) => task.isArchive);
 
@@ -116,8 +115,7 @@ export default class BoardController {
 
     taskListElement.innerHTML = ``;
 
-    const newTasks = renderTasks(taskListElement, sortedTasks, this._onDataChange, this._onViewChange);
-    this._showedTaskControllers = newTasks;
+    this._showedTaskControllers = renderTasks(taskListElement, sortedTasks, this._onDataChange, this._onViewChange);
 
     if (sortType === SortType.DEFAULT) {
       this._renderLoadMoreButton();
