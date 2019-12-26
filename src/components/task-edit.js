@@ -150,7 +150,7 @@ export default class TaskEdit extends AbstractSmartComponentComponent {
                     repeat:<span class="card__repeat-status">${this._isRepeatingTask ? `yes` : `no`}</span>
                   </button>
                   ${this._isRepeatingTask ? `
-                    <fieldset class="card__repeat-days">
+                    <fieldset class="card__repeat-days" tabindex="1">
                       <div class="card__repeat-days-inner">
                         ${repeatingDaysMarkup}
                       </div>
@@ -206,10 +206,11 @@ export default class TaskEdit extends AbstractSmartComponentComponent {
   }
 
   saveData() {
-    this._task.dueDate = this._date;
     this._task.repeatingDays = this._isRepeatingTask;
     this._task.repeatingDays = this._activeRepeatingDays;
-
+    if (this._flatpickr) {
+      this._task.dueDate = this._flatpickr.selectedDates[0];
+    }
     this.rerender();
   }
 
@@ -247,8 +248,8 @@ export default class TaskEdit extends AbstractSmartComponentComponent {
     }
 
     if (this._isDateShowing) {
-      this._dateElement = this.getElement().querySelector(`.card__date`);
-      this._flatpickr = flatpickr(this._dateElement, {
+      const dateElement = this.getElement().querySelector(`.card__date`);
+      this._flatpickr = flatpickr(dateElement, {
         altInput: true,
         allowInput: true,
         defaultDate: this._task.dueDate,
