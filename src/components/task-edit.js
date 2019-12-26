@@ -199,7 +199,7 @@ export default class TaskEdit extends AbstractSmartComponentComponent {
   }
 
   saveData() {
-    this._task.dueDate = this._isDateShowing;
+    this._task.dueDate = this._date;
     this._task.repeatingDays = this._isRepeatingTask;
     this._task.repeatingDays = this._activeRepeatingDays;
 
